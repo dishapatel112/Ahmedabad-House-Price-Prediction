@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ahmedabad House Price Predictor | Professional</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e8f1f9, #eef2f3);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 760px;
+            background: #fff;
+            padding: 40px 35px;
+            border-radius: 22px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+            transition: 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 22px 55px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #234d6a;
+            margin-bottom: 8px;
+        }
+
+        p.sub {
+            text-align: center;
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 18px;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            background: #fafafa;
+            transition: 0.2s;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg fill='gray' height='24' width='24' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 18px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #234d6a;
+            box-shadow: 0px 0px 4px rgba(35, 77, 106, 0.25);
+            background: #fff;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            background: #234d6a;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1a374f;
+            transform: translateY(-2px);
+        }
+
+        .result,
+        .range {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .result {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #234d6a;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .range {
+            font-size: 1rem;
+            color: #666;
+            animation: fadeIn 0.7s ease forwards;
+        }
+
+        .error {
+            background: #ffe7e7;
+            padding: 14px;
+            margin-top: 20px;
+            border-left: 5px solid #d9534f;
+            border-radius: 10px;
+            color: #b03833;
+            font-weight: 500;
+            animation: shake 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media(max-width:520px) {
+            .card {
+                padding: 28px 20px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h1>🏡 Ahmedabad House Price Predictor</h1>
+        <p class="sub">Enter details to get an accurate market valuation</p>
+
+        <form method="POST">
+
+            <label>Locality</label>
+            <select name="locality" required>
+                <option value="" disabled selected>Select locality</option>
+                {% for loc in localities %}
+                <option value="{{ loc }}">{{ loc }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Furnishing</label>
+            <select name="furnishing" required>
+                <option value="" disabled selected>Select furnishing</option>
+                {% for f in furnishings %}
+                <option value="{{ f }}">{{ f }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Property Status</label>
+            <select name="status" required>
+                <option value="" disabled selected>Select status</option>
+                {% for s in statuses %}
+                <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+            </select>
+
+            <label>BHK</label>
+            <input type="number" name="bhk" min="1" max="9" required placeholder="e.g. 2">
+
+            <label>Area (sqft)</label>
+            <input type="number" name="area_sqft" min="250" max="12000" required placeholder="e.g. 1250">
+
+            <button type="submit">Predict Price</button>
+        </form>
+
+        {% if error_msg %}
+        <div class="error">⚠️ {{ error_msg }}</div>
+        {% endif %}
+
+        {% if prediction %}
+        <div class="result">💰 Price: {{ prediction }}</div>
+        {% endif %}
+
+        {% if prediction_range %}
+        <div class="range">📊 Market Range: {{ prediction_range }}</div>
+        {% endif %}
+
+        {% if prediction %}
+        <canvas id="priceChart" style="margin-top:30px; width:100%; height:320px;"></canvas>
+        {% endif %}
+    </div>
+
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        {% if prediction_raw %}
+
+        const predictedPrice = {{ prediction_raw }};
+        const minMarket = {{ min_price_raw }};
+        const maxMarket = {{ max_price_raw }};
+
+        const ctx = document.getElementById("priceChart").getContext("2d");
+
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: ["Predicted Price", "Min Market", "Max Market"],
+                datasets: [{
+                    label: "Price in ₹",
+                    data: [predictedPrice, minMarket, maxMarket],
+                    borderWidth: 2,
+                    backgroundColor: ["#234d6a", "#5a96c7", "#8ecae6"]
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: false }
+                }
+            }
+        });
+
+        {% endif %}
+    </script>
+
+</body>
+
+</html>
