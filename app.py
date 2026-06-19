@@ -118,9 +118,8 @@ def home():
             price = np.clip(price, min_price, max_price)
             price = apply_furnishing_delta(price, furnishing_input)
 
-            # ---- NEW: store result in session instead of local variables ----
-            # float()/int() conversion zaroori hai kyuki numpy types session
-            # (JSON-based cookie) me serialize nahi hote
+            # store result in session instead of local variables
+
             session["prediction"] = format_inr(price)
             session["prediction_raw"] = float(price)
             session["min_price_raw"] = float(min_price)
@@ -139,10 +138,10 @@ def home():
             session["prediction_range"] = None
             session["error_msg"] = str(e)
 
-        # ---- NEW: redirect to GET so refresh doesn't resend POST ----
+        #redirect to GET so refresh doesn't resend POST
         return redirect(url_for("home"))
 
-    # ---- GET request: pull result from session ONCE, then it's cleared ----
+    #pull result from session ONCE, then it's cleared
     prediction = session.pop("prediction", None)
     prediction_raw = session.pop("prediction_raw", None)
     min_price_raw = session.pop("min_price_raw", None)
@@ -162,7 +161,6 @@ def home():
         prediction_range=prediction_range,
         error_msg=error_msg
     )
-
 
 
 # JSON ROUTE FOR JAVASCRIPT + CHART
